@@ -4,6 +4,7 @@ from app import shipping_fee
 
 class ShippingFeeTest(unittest.TestCase):
     def test_free_shipping_boundary(self):
+        self.assertEqual(shipping_fee(0), 0)
         self.assertEqual(shipping_fee(4999), 500)
         self.assertEqual(shipping_fee(5000), 0)
         self.assertEqual(shipping_fee(5001), 0)
