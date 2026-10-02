@@ -22,11 +22,7 @@ jobs:
           tar -czf dist/application.tar.gz app.py
           cd dist
           sha256sum application.tar.gz > SHA256SUMS
-          printf 'commit=%s
-tag=%s
-run=%s
-staging=passed
-' "$GITHUB_SHA" "$GITHUB_REF_NAME" "$GITHUB_RUN_ID" > staging.txt
+          printf 'commit=%s\ntag=%s\nrun=%s\nstaging=passed\n' "$GITHUB_SHA" "$GITHUB_REF_NAME" "$GITHUB_RUN_ID" > staging.txt
           cat staging.txt SHA256SUMS >> "$GITHUB_STEP_SUMMARY"
       - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
         with:
@@ -57,13 +53,7 @@ staging=passed
           grep -Fx 'staging=passed' staging.txt
           tar -xzf application.tar.gz
           python3 -c 'from app import shipping_fee; assert shipping_fee(5000) == 0'
-          printf 'commit=%s
-tag=%s
-run=%s
-attempt=%s
-actor=%s
-deployment=simulated
-' "$GITHUB_SHA" "$GITHUB_REF_NAME" "$GITHUB_RUN_ID" "$GITHUB_RUN_ATTEMPT" "$GITHUB_ACTOR" > deployment.txt
+          printf 'commit=%s\ntag=%s\nrun=%s\nattempt=%s\nactor=%s\ndeployment=simulated\n' "$GITHUB_SHA" "$GITHUB_REF_NAME" "$GITHUB_RUN_ID" "$GITHUB_RUN_ATTEMPT" "$GITHUB_ACTOR" > deployment.txt
           cat deployment.txt SHA256SUMS >> "$GITHUB_STEP_SUMMARY"
       - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
         with:
