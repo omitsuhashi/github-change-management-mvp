@@ -2,7 +2,7 @@
 
 公開デモ専用の架空サンプルです。実在の案件情報・本番資格情報は含みません。送料計算の小さな変更を使い、Issue → PR → CI → リリースタグ → staging検証 → 承認待ち → 反映記録の流れを示します。
 
-[Project](https://github.com/users/omitsuhashi/projects/12) · [Issues](https://github.com/omitsuhashi/github-change-management-mvp-20261002/issues) · [Pull requests](https://github.com/omitsuhashi/github-change-management-mvp-20261002/pulls) · [Actions](https://github.com/omitsuhashi/github-change-management-mvp-20261002/actions)
+[Project](https://github.com/users/omitsuhashi/projects/12) · [Issues](https://github.com/omitsuhashi/github-change-management-mvp/issues) · [Pull requests](https://github.com/omitsuhashi/github-change-management-mvp/pulls) · [Actions](https://github.com/omitsuhashi/github-change-management-mvp/actions)
 
 ## 試し方
 
@@ -19,13 +19,13 @@
 
 ### 誰が承認するか
 
-GitHub EnvironmentのRequired reviewersに登録された人が承認します。2026-10-02時点の指定承認者は `omitsuhashi` です。登録先は [Settings → Environments](https://github.com/omitsuhashi/github-change-management-mvp-20261002/settings/environments) → production-demo → Required reviewersです。
+GitHub EnvironmentのRequired reviewersに登録された人が承認します。2026-10-02時点の指定承認者は `omitsuhashi` です。登録先は [Settings → Environments](https://github.com/omitsuhashi/github-change-management-mvp/settings/environments) → production-demo → Required reviewersです。
 
 通常時はPrevent self-reviewが有効なので、指定承認者でも、自分が開始した実行は承認できません。一人デモでは、所有者の明示承認に基づく「一人で実演する場合の一時例外」を適用してから進め、終了時に設定を戻します。
 
 ### 画面でApproveする
 
-1. [Actions](https://github.com/omitsuhashi/github-change-management-mvp-20261002/actions)を開き、左側の **Release demo** を選びます。
+1. [Actions](https://github.com/omitsuhashi/github-change-management-mvp/actions)を開き、左側の **Release demo** を選びます。
 2. 今回のタグ（例: `v1.0.2`）の実行を開きます。同じタグを付け直さず、次の実演には新しいタグを使います。
 3. 対象タグ・commit SHAと、stagingが成功していることを確認します。stagingのログ、実行Summary、`release-bundle` artifactから検証結果と成果物のSHA-256を確認できます。このデモは自動テストと成果物作成までで、実サーバー上の動作確認は行いません。本番運用では必要な動作確認も承認前に行います。
 4. 実行画面の承認依頼から **Review deployments** を押します。
@@ -39,7 +39,7 @@ GitHub EnvironmentのRequired reviewersに登録された人が承認します�
 
 - stagingが未完了・失敗、または別の実行が同じ環境の実行枠を占有している場合は、production-demoの承認待ちになるまで進行状況を確認します。
 - 登録された承認者のアカウントでログインしているか、自己承認禁止に該当していないかを確認します。
-- 成功済み・取消済みの実行は、新たな承認の対象ではありません。[v1.0.1の成功例](https://github.com/omitsuhashi/github-change-management-mvp-20261002/actions/runs/36945640405)は結果の確認用です。
+- 成功済み・取消済みの実行は、新たな承認の対象ではありません。[v1.0.1の成功例](https://github.com/omitsuhashi/github-change-management-mvp/actions/runs/36945640405)は結果の確認用です。
 
 [GitHub公式: Reviewing deployments](https://docs.github.com/en/actions/how-tos/deploy/configure-and-manage-deployments/review-deployments)
 
