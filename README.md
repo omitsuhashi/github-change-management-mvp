@@ -20,11 +20,25 @@
 - production-demo: `v*` タグだけ許可、必須承認者 `omitsuhashi`、自己承認防止、管理者による承認bypass禁止。
 - Actions: 使用Actionを限定し完全なcommit SHAで固定。Tokenはreadを基本にします。Secretやクラウド接続は設定しません。
 
-## レビュー・承認に必要なユーザー
+## 一人で実演する場合の例外案（未適用）
 
-このRepositoryは個人所有です。CODEOWNERSは所有者を設定していますが、所有者が作成したPRを本人は承認できません。実演を先へ進めるには、別のレビュー担当者へWrite権限を付与し、必要に応じてCODEOWNERSを更新してください。
+レビュー担当者を別途用意できない場合、この公開サンドボックス内だけで、実演中に以下の例外を使い、完了または失敗時に元へ戻す方式を提案します。設定変更はまだ行っていません。
 
-production-demoも起動者の自己承認を禁止します。所有者がタグを作った実行は所有者だけでは承認できません。別の承認者の登録か、別の担当者による開始が必要です。デモを通すためにこの保護を外しません。
+| 対象 | 実演中の変更 | 維持する条件 |
+| --- | --- | --- |
+| PR #2 | Repository AdminへPR経由のレビューbypassを一時付与 | CIのtest、mainの直接push・force push・削除禁止はbypassなしの別Rulesetで維持 |
+| production-demo | 自己承認防止を一時的にオフ | 指定承認者、明示的な承認待ち、許可タグ、管理者による承認bypass禁止を維持 |
+| 正式タグ | 変更なし | 既存タグの移動・削除禁止 |
+
+1. 最新PRのSHAとCI成功を確認し、例外の理由・対象をPRに記録します。
+2. CIと履歴保護をbypassのない別Rulesetへ分離してから、PRだけに例外を適用します。
+3. 確認したHEADのPR #2を例外マージし、新しいv1.0.1タグでstaging検証します。
+4. production-demoの承認待ちで所有者が対象版を承認し、同じ成果物の模擬反映と保存された結果を確認します。
+5. レビューbypassと自己承認の許可を元に戻し、結果をIssueとProjectへ反映します。途中失敗でも保護設定を復旧します。
+
+この方式は一人で実演するための限定例外です。別人による独立したレビュー・承認の実証にはなりません。例外は実演中だけ有効とし、本番や別リポジトリへは適用しません。実演後に繰り返す場合も同じ例外・復旧手順が必要です。
+
+[PR-only bypass](https://docs.github.com/en/repositories/configuring-branches-and-merges-in-your-repository/managing-rulesets/creating-rulesets-for-a-repository) / [Environmentの承認](https://docs.github.com/en/actions/reference/workflows-and-actions/deployments-and-environments)
 
 ## Projectの扱い
 
