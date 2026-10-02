@@ -1,0 +1,74 @@
+name: Release demo
+on:
+  push:
+    tags: ['v*']
+permissions:
+  contents: read
+jobs:
+  staging:
+    runs-on: ubuntu-latest
+    environment: staging
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
+        with:
+          fetch-depth: 0
+      - name: Check that the release commit belongs to main
+        run: git merge-base --is-ancestor "$GITHUB_SHA" origin/main
+      - run: python3 -m unittest -v
+      - name: Build once and record staging verification
+        run: |
+          mkdir dist
+          tar -czf dist/application.tar.gz app.py
+          cd dist
+          sha256sum application.tar.gz > SHA256SUMS
+          printf 'commit=%s
+tag=%s
+run=%s
+staging=passed
+' "$GITHUB_SHA" "$GITHUB_REF_NAME" "$GITHUB_RUN_ID" > staging.txt
+          cat staging.txt SHA256SUMS >> "$GITHUB_STEP_SUMMARY"
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        with:
+          name: release-bundle
+          path: dist/
+          if-no-files-found: error
+          retention-days: 30
+  production-demo:
+    needs: staging
+    runs-on: ubuntu-latest
+    environment: production-demo
+    timeout-minutes: 5
+    concurrency:
+      group: production-demo
+      cancel-in-progress: false
+    steps:
+      - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4
+        with:
+          name: release-bundle
+          path: dist/
+      - name: Verify the staged artifact and simulate deployment
+        run: |
+          cd dist
+          sha256sum -c SHA256SUMS
+          grep -Fx "commit=$GITHUB_SHA" staging.txt
+          grep -Fx "tag=$GITHUB_REF_NAME" staging.txt
+          grep -Fx "run=$GITHUB_RUN_ID" staging.txt
+          grep -Fx 'staging=passed' staging.txt
+          tar -xzf application.tar.gz
+          python3 -c 'from app import shipping_fee; assert shipping_fee(5000) == 0'
+          printf 'commit=%s
+tag=%s
+run=%s
+attempt=%s
+actor=%s
+deployment=simulated
+' "$GITHUB_SHA" "$GITHUB_REF_NAME" "$GITHUB_RUN_ID" "$GITHUB_RUN_ATTEMPT" "$GITHUB_ACTOR" > deployment.txt
+          cat deployment.txt SHA256SUMS >> "$GITHUB_STEP_SUMMARY"
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        with:
+          name: deployment-receipt
+          path: |
+            dist/deployment.txt
+            dist/SHA256SUMS
+          retention-days: 30

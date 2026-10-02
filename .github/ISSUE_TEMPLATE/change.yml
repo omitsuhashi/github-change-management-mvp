@@ -1,0 +1,34 @@
+name: 変更・改善の提案
+description: 目的と受け入れ条件を記録する
+title: "[変更] "
+labels: [enhancement]
+projects: ["omitsuhashi/12"]
+body:
+  - type: textarea
+    id: purpose
+    attributes:
+      label: 背景・目的
+    validations:
+      required: true
+  - type: input
+    id: target
+    attributes:
+      label: 対象
+    validations:
+      required: true
+  - type: textarea
+    id: change
+    attributes:
+      label: 変更内容
+    validations:
+      required: true
+  - type: textarea
+    id: acceptance
+    attributes:
+      label: 受け入れ条件
+    validations:
+      required: true
+  - type: textarea
+    id: impact
+    attributes:
+      label: 影響・検証・戻し方
