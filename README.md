@@ -7,8 +7,8 @@
 ## 試し方
 
 1. Issueフォームで目的・変更内容・受け入れ条件を登録します。
-2. 作業ブランチからPRを作り、Issueを `Refs #番号` で参照します。
-3. `python3 -m unittest -v` がCIでも実行されます。テスト失敗・必須レビュー不足はマージを止めます。
+2. 作業ブランチからPRを作り、本文の単独行に `Refs #番号` を記載します。同じRepositoryの実在するIssueを参照します。
+3. 必須CIの `test` がIssue参照の検査と `python3 -m unittest -v` を実行します。Issue参照なし・存在しない番号・PR番号・テスト失敗・必須レビュー不足はマージを止めます。
 4. main上のコミットへ `v1.0.0` 等のタグを作成します。指定発行者以外の作成、既存タグの移動・削除を制限します。
 5. Release demoが一度だけ成果物を作り、staging検証記録とSHA-256を保存します。
 6. production-demoはEnvironmentの承認待ちになります。承認後に同じ成果物を検証し、Runner上で反映を模擬して結果をartifactへ保存します。実サーバーへのデプロイは行いません。
@@ -49,6 +49,14 @@ GitHub EnvironmentのRequired reviewersに登録された人が承認します�
 - 正式タグ: 作成制限と更新・削除制限を別Rulesetにします。個人所有Repositoryのため、作成はRepository Adminに限定し、移動・削除側にはbypassを設けません。
 - production-demo: `v*` タグだけ許可、必須承認者 `omitsuhashi`、自己承認防止、管理者による承認bypass禁止。
 - Actions: 使用Actionを限定し完全なcommit SHAで固定。Tokenはreadを基本にします。Secretやクラウド接続は設定しません。
+
+## PRの関連Issue検査
+
+PRの作成・本文編集・再オープン・コミット更新・レビュー準備完了時に、GitHub APIから最新の本文と参照先を取得します。本文の単独行に `Refs #4` のように記載された参照をすべて検査し、APIで確認できない場合もCIを失敗させます。既存の必須チェック `test` に含めるため、別の必須チェック登録は不要です。
+
+`Closes #番号` / `Fixes #番号` / `Resolves #番号` も使えますが、mainへのマージ時にIssueを閉じます。本番確認まで追跡する場合は `Refs #番号` を使います。`Refs` は本文での参照であり、GitHubのDevelopment欄の自動クローズ用リンクとは異なります。サイドバーのリンクだけ、コメント内の参照、別RepositoryのIssueだけでは検査を通しません。
+
+PR作成自体は許可し、Issue参照がなければマージを止めます。ワークフロー・検査コードの変更も既存のCODEOWNERSレビューの対象です。
 
 ## 一人で実演する場合の一時例外
 
